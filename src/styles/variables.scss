@@ -1,0 +1,29 @@
+$color-primary: #ffffff;
+$color-secondary: #ededed;
+$color-tertiary: #8a8a8a;
+$color-quaternary: #000000;
+
+$colors: (
+  '-primary': $color-primary,
+  '-secondary': $color-secondary,
+  '-tertiary': $color-tertiary,
+  '-quaternary': $color-quaternary
+);
+
+@mixin desktop-max {
+  @media screen and (min-width: 1680px) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media screen and (min-width: 720px) {
+    @content;
+  }
+}
+
+@mixin mobile {
+  @media screen and (max-width: 720px) {
+    @content;
+  }
+}

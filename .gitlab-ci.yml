@@ -1,0 +1,41 @@
+stages:
+  - prepare
+
+tests:
+  image: gpcz/pnpm:bash
+  stage: prepare
+  before_script:
+    - apt-get update && apt-get -y install ssh
+    - mkdir ~/.ssh/
+    - echo "$CI_SERVER_HOST"
+    - ssh-keyscan "$CI_SERVER_HOST" > ~/.ssh/known_hosts
+    - cp "${SSH_KEY}" ~/.ssh/id_ed25519
+    - chmod 600 ~/.ssh/id_ed25519
+    - git config user.email "robot@greenpanda.cz"
+    - git config user.name "🤖 Robot"
+    - git remote remove ssh_origin || true # Local repo state may be cached
+    - git remote add ssh_origin "git@${CI_SERVER_HOST}:${CI_PROJECT_PATH}.git"
+    - pnpm config set store-dir .pnpm-store
+  script:
+    - echo "⬇️  installing dependencies..."
+    - pnpm install --frozen-lockfile
+    - pnpm run lint:fix
+    - |
+      if [[ -n $(git status --porcelain) ]]; then
+        git add .
+        git commit -m "🤖 reformat files"
+        echo "🤖 reformatted files"
+        ERROR=1
+      fi
+    - git push ssh_origin HEAD:$CI_COMMIT_BRANCH
+    - |
+      if [[ $ERROR -eq 1 ]]; then
+        exit 1
+      fi
+    - pnpm run check
+  cache:
+    key:
+      files:
+        - pnpm-lock.yaml
+    paths:
+      - .pnpm-store
