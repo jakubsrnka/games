@@ -4,11 +4,12 @@
   export let value: Digit | null = null;
   export let f: (value: Digit) => void;
   export let x: () => void;
+  export let candidates = false;
 </script>
 
 {#each Array.from({ length: 9 }) as _, i}
   <Button
-    class="border-neutral-700"
+    class="border-neutral-700 {candidates ? 'text-xs' : 'text-base'}"
     on:click={() => {
       value = VALID_DIGITS[i];
       if (value) {
