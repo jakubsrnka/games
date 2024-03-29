@@ -40,6 +40,9 @@
       if (sudokuSettings.autoCandidates) {
         candidates = figureOutCandidates(grid.candidates, userSolution);
       }
+      if (sudokuSettings.autoDeselect) {
+        selected = null;
+      }
     }
   };
 
@@ -61,7 +64,7 @@
   const sudokuSettings: UserSudokuSettings = {
     autoCandidates: true,
     showCorrect: false,
-    autoDeselect: true,
+    autoDeselect: false,
     autoDeleteCandidates: false
   };
 
@@ -93,6 +96,10 @@
 </script>
 
 <div class="m-4 ml-auto mr-auto flex w-fit flex-col items-center gap-4">
+  <div class=" m-auto mt-2 flex w-fit cursor-pointer items-center gap-2">
+    <Switch id="auto-deselect" bind:checked={sudokuSettings.autoDeselect}></Switch>
+    <Label for="auto-deselect">Auto deselect</Label>
+  </div>
   <div class="relative grid w-fit grid-cols-9 border border-neutral-500">
     <LayoverGrid />
     {#each Array.from({ length: 81 }) as _, i}
