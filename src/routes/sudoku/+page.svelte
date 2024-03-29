@@ -35,7 +35,7 @@
   let userSolution: { [key: number]: Digit } = {};
 
   const setDigit = (digit: Digit) => {
-    if (selected) {
+    if (selected !== null) {
       userSolution[selected] = digit;
       if (sudokuSettings.autoCandidates) {
         candidates = figureOutCandidates(grid.candidates, userSolution);
@@ -44,7 +44,7 @@
   };
 
   const removeDigit = () => {
-    if (selected) delete userSolution[selected];
+    if (selected !== null) delete userSolution[selected];
     userSolution = userSolution;
     candidates = figureOutCandidates(grid.candidates, userSolution);
   };
@@ -55,18 +55,20 @@
     autoCandidates: boolean;
     showCorrect: boolean;
     autoDeselect: boolean;
+    autoDeleteCandidates: boolean;
   };
 
   const sudokuSettings: UserSudokuSettings = {
     autoCandidates: true,
     showCorrect: false,
-    autoDeselect: true
+    autoDeselect: true,
+    autoDeleteCandidates: false
   };
 
   let userCandidates: { [key: number]: Set<Digit> } = {};
 
   const setCandidate = (digit: Digit) => {
-    if (selected) {
+    if (selected !== null) {
       if (!userCandidates[selected]) {
         userCandidates[selected] = new Set();
       }
@@ -83,7 +85,7 @@
   };
 
   const removeCandidates = () => {
-    if (selected && userCandidates[selected]) {
+    if (selected !== null && userCandidates[selected]) {
       delete userCandidates[selected];
     }
     userCandidates = userCandidates;
