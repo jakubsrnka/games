@@ -1,13 +1,16 @@
 <script lang="ts">
+  import Nav from '$components/elements/header/Nav.svelte';
   import Candidates from '$components/sudoku/Candidates.svelte';
   import LayoverGrid from '$components/sudoku/LayoverGrid.svelte';
   import Setter from '$components/sudoku/Setter.svelte';
+  import { Drawer, DrawerTrigger, DrawerContent } from '$components/ui/drawer';
   import Label from '$components/ui/label/label.svelte';
   import Switch from '$components/ui/switch/switch.svelte';
   import { Tabs, TabsList, TabsTrigger } from '$components/ui/tabs';
   import TabsContent from '$components/ui/tabs/tabs-content.svelte';
   import Script from '$components/utils/Script.svelte';
   import { candidatesToObject, figureOutCandidates } from '$lib/sudoku/candidates';
+  import { ChevronLeft, Settings2 } from 'lucide-svelte';
   import { getSudoku } from 'sudoku-gen';
   import {
     parseGrid,
@@ -95,11 +98,47 @@
   };
 </script>
 
+<Nav>
+  <a href="/">
+    <ChevronLeft size={32} absoluteStrokeWidth />
+  </a>
+  <h1>Sudoku</h1>
+  <Drawer>
+    <DrawerTrigger>
+      <Settings2 absoluteStrokeWidth />
+    </DrawerTrigger>
+    <DrawerContent>
+      <div class="h-[80vh]">
+        <Nav>
+          <div class="m-auto">Settings</div>
+        </Nav>
+        <div class="flex flex-col items-start gap-2 p-4">
+          <div class="mt-2 flex w-full cursor-pointer items-center gap-2">
+            <Switch id="auto-deselect" bind:checked={sudokuSettings.autoDeselect} />
+            <Label class="w-full cursor-pointer" for="auto-deselect">Auto deselect</Label>
+          </div>
+          <div class="mt-2 flex w-full cursor-pointer items-center gap-2">
+            <Switch
+              id="auto-delete-candidates"
+              bind:checked={sudokuSettings.autoDeleteCandidates}
+            />
+            <Label class="w-full cursor-pointer" for="auto-delete-candidates">
+              Auto delete candidates
+            </Label>
+          </div>
+          <div class="mt-2 flex w-full cursor-pointer items-center gap-2">
+            <Switch id="auto-show-correct" bind:checked={sudokuSettings.showCorrect} />
+            <Label class="w-full cursor-pointer" for="auto-show-correct">
+              Highlight correct numbers
+            </Label>
+          </div>
+        </div>
+      </div>
+    </DrawerContent>
+  </Drawer>
+</Nav>
+
 <div class="m-4 ml-auto mr-auto flex w-fit flex-col items-center gap-4">
-  <div class=" m-auto mt-2 flex w-fit cursor-pointer items-center gap-2">
-    <Switch id="auto-deselect" bind:checked={sudokuSettings.autoDeselect}></Switch>
-    <Label for="auto-deselect">Auto deselect</Label>
-  </div>
   <div class="relative grid w-fit grid-cols-9 border border-neutral-500">
     <LayoverGrid />
     {#each Array.from({ length: 81 }) as _, i}
