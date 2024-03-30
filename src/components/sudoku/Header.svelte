@@ -2,6 +2,7 @@
   import Nav from '$components/elements/header/Nav.svelte';
   import { Drawer, DrawerContent, DrawerTrigger } from '$components/ui/drawer';
   import Label from '$components/ui/label/label.svelte';
+  import ScrollArea from '$components/ui/scroll-area/scroll-area.svelte';
   import {
     Select,
     SelectContent,
@@ -11,6 +12,7 @@
   } from '$components/ui/select';
   import SelectItem from '$components/ui/select/select-item.svelte';
   import SelectLabel from '$components/ui/select/select-label.svelte';
+  import Separator from '$components/ui/separator/separator.svelte';
   import Switch from '$components/ui/switch/switch.svelte';
   import { capitalize } from '$lib/shared/texts';
   import { difficulties } from '$lib/sudoku';
@@ -19,59 +21,76 @@
 </script>
 
 <Nav>
-  <a href="/">
+  <a href="/" class="grid h-8 w-8 place-items-center">
     <ChevronLeft size={32} absoluteStrokeWidth />
   </a>
   <h1>Sudoku</h1>
   <Drawer>
     <DrawerTrigger>
-      <Settings2 absoluteStrokeWidth />
+      <div class="grid h-8 w-8 place-items-center">
+        <Settings2 absoluteStrokeWidth />
+      </div>
     </DrawerTrigger>
     <DrawerContent>
-      <div class="h-[80vh]">
+      <div class="flex h-[80vh] flex-col">
         <Nav>
           <div class="m-auto">Settings</div>
         </Nav>
-        <div class="flex flex-col items-start gap-2 p-4">
-          <div class="mt-2 flex w-full cursor-pointer items-center gap-2">
-            <Switch id="auto-deselect" bind:checked={$sudokuSettings.autoDeselect} />
-            <Label class="w-full cursor-pointer" for="auto-deselect">Auto deselect</Label>
-          </div>
-          <div class="mt-2 flex w-full cursor-pointer items-center gap-2">
-            <Switch
-              id="auto-delete-candidates"
-              bind:checked={$sudokuSettings.autoDeleteCandidates}
-            />
-            <Label class="w-full cursor-pointer" for="auto-delete-candidates">
-              Auto delete candidates
-            </Label>
-          </div>
-          <div class="mt-2 flex w-full cursor-pointer items-center gap-2">
-            <Switch id="auto-show-correct" bind:checked={$sudokuSettings.showCorrect} />
-            <Label class="w-full cursor-pointer" for="auto-show-correct">
-              Highlight correct numbers
-            </Label>
-          </div>
+        <ScrollArea class="">
+          <div class="flex flex-col items-start gap-4 p-4">
+            <div class="flex w-full cursor-pointer items-center gap-2">
+              <Switch id="auto-deselect" bind:checked={$sudokuSettings.autoDeselect} />
+              <Label class="w-full cursor-pointer" for="auto-deselect">Auto deselect</Label>
+            </div>
 
-          <div class="w-full pt-4">
-            <Select>
-              <SelectTrigger>
-                <SelectValue placeholder={capitalize($sudokuSettings.difficulty)} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Difficulty</SelectLabel>
-                  {#each difficulties as dif}
-                    <SelectItem value={dif} on:click={() => ($sudokuSettings.difficulty = dif)}>
-                      {capitalize(dif)}
-                    </SelectItem>
-                  {/each}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            <span class="text-xs">Changing difficulty reset the current game.</span>
+            <div class="flex w-full cursor-pointer items-center gap-2">
+              <Switch id="auto-show-correct" bind:checked={$sudokuSettings.showCorrect} />
+              <Label class="w-full cursor-pointer" for="auto-show-correct">
+                Highlight correct numbers
+              </Label>
+            </div>
+            <Separator />
+            <div class="flex w-full cursor-pointer items-center gap-2">
+              <Switch id="auto-candidates" bind:checked={$sudokuSettings.autoCandidates} />
+              <Label class="w-full cursor-pointer" for="auto-candidates">Auto candidates</Label>
+            </div>
+            <div class="flex w-full cursor-pointer items-center gap-2">
+              <Switch
+                id="auto-delete-candidates"
+                bind:checked={$sudokuSettings.autoDeleteCandidates}
+                disabled={$sudokuSettings.autoCandidates}
+              />
+              <Label class="w-full cursor-pointer" for="auto-delete-candidates">
+                Auto delete candidates
+              </Label>
+            </div>
+            <span class="text-xs">
+              This means your custom candidates will be deleted while playing the game. Disabling
+              this might cause worse readabilty though.
+            </span>
+
+            <Separator />
+
+            <div class="w-full">
+              <Select>
+                <SelectTrigger>
+                  <SelectValue placeholder={capitalize($sudokuSettings.difficulty)} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Difficulty</SelectLabel>
+                    {#each difficulties as dif}
+                      <SelectItem value={dif} on:click={() => ($sudokuSettings.difficulty = dif)}>
+                        {capitalize(dif)}
+                      </SelectItem>
+                    {/each}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <span class="text-xs">Changing difficulty reset the current game.</span>
+            </div>
           </div>
-        </div>
+        </ScrollArea>
       </div>
     </DrawerContent>
   </Drawer>
