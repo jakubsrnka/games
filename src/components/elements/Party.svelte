@@ -6,10 +6,12 @@
   const paths: SVGPathElement[] = [];
 
   onMount(() => {
+    const min = Math.min(...paths.map((path) => path.getTotalLength()));
+
     paths.forEach((path) => {
-      path.style.transition = 'stroke-dashoffset 1s';
       path.style.strokeDasharray = `${path.getTotalLength()}`;
       path.style.strokeDashoffset = `${path.getTotalLength()}`;
+      path.style.animationDuration = `${(path.getTotalLength() / min) * 250}ms`;
     });
   });
 </script>
@@ -25,10 +27,10 @@
   stroke-linejoin="round"
 >
   <path d="M5.8 11.2998L2 21.9998L12.7 18.2098" stroke="#0891B2" />
-  <path d="M4 3H4.01" stroke="#10B981" />
-  <path d="M22 8H22.01" stroke="#F43F5E" />
-  <path d="M15 2H15.01" stroke="#A855F7" />
-  <path d="M22 20H22.01" stroke="#6366F1" />
+  <path d="M4 3H4.01" stroke="#10B981" class="animate-appear" />
+  <path d="M22 8H22.01" stroke="#F43F5E" class="animate-appear" />
+  <path d="M15 2H15.01" stroke="#A855F7" class="animate-appear" />
+  <path d="M22 20H22.01" stroke="#6366F1" class="animate-appear" />
   <path
     d="M11 13C12.93 14.93 13.83 17.17 13 18C12.17 18.83 9.93002 17.93 8.00002 16C6.07002 14.07 5.17002 11.83 6.00002 11C6.83002 10.17 9.07002 11.07 11 13Z"
     stroke="#06B6D4"
@@ -55,12 +57,24 @@
 
 <style>
   svg .animate-dash {
-    animation: dash 0.5s linear forwards;
+    animation: dash linear forwards;
+  }
+
+  svg .animate-appear {
+    animation: appear 200ms linear forwards;
+    animation-delay: 200ms;
+    opacity: 0;
   }
 
   @keyframes dash {
     to {
       stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes appear {
+    to {
+      opacity: 1;
     }
   }
 </style>
