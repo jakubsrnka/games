@@ -2,20 +2,6 @@ import { supabase } from '$lib/shared/supabase';
 import { fail, type Actions } from '@sveltejs/kit';
 
 export const actions: Actions = {
-  register: async ({ request }) => {
-    const { email, password } = await request.json();
-    const { data, error } = await supabase.auth.signUp({ email, password });
-    if (error) {
-      return {
-        status: 500,
-        body: error.message
-      };
-    }
-    return {
-      status: 200,
-      body: data
-    };
-  },
   login: async ({ request, cookies }) => {
     const formData = await request.formData();
 
