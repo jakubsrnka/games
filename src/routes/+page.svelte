@@ -6,38 +6,59 @@
   import Input from '$components/ui/input/input.svelte';
   import Label from '$components/ui/label/label.svelte';
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$components/ui/tabs';
-  import { onMount } from 'svelte';
-  import type { ActionData } from './$types';
   import { user } from '$lib/client/user';
-  import { enhance } from '$app/forms';
+  import { login } from '$lib/user';
+  import type { Login } from '$lib/types/user';
+  import { browser } from '$app/environment';
+  import Error from '$components/elements/Error.svelte';
+  import type { PageData } from './$types';
+  import Party from '$components/elements/Party.svelte';
+  import * as Card from '$components/ui/card';
 
-  export let form: ActionData;
+  export let data: PageData;
 
-  const handleForm = () => {
-    if (form && form.status === 200) {
-      switch (form.action) {
-        case 'login':
-          user.set(form.body?.user ?? null);
-          break;
-        case 'logout':
-          user.set(null);
-          break;
-      }
-    }
+  let drawer = false;
+  let loading = false;
+  let error: null | string = null;
 
-    if (form && form.status !== 200) {
-      alert(form.message);
-    }
+  const userData: Login = {
+    email: '',
+    password: ''
   };
 
-  onMount(handleForm);
+  const handleLogin = async () => {
+    error = null;
+    loading = true;
+    const response = await login(userData);
+    loading = false;
+    if (response.error) {
+      error = response.error;
+      return;
+    } else if (response.data) {
+      const { user: userResponse, session } = response.data;
+      if (browser) {
+        document.cookie = `sb_session=${session.access_token}; path=/; max-age=${60 * 60 * 24 * 7}`;
+        document.cookie = `sb_refresh=${session.refresh_token}; path=/; max-age=${60 * 60 * 24 * 7}`;
+      }
+      user.set(userResponse);
+      drawer = false;
+      return;
+    }
+    error = 'An unknown error occurred';
+  };
 
-  $: form, handleForm();
+  const handleLogout = async () => {
+    user.set(null);
+    if (browser) {
+      document.cookie = 'sb_session=; path=/; max-age=0';
+      document.cookie = 'sb_refresh=; path=/; max-age=0';
+    }
+  };
 </script>
 
 <div class="grid grid-cols-[40px_1fr_40px] items-center border-b p-3">
   <h1 class="col-start-2 text-center text-2xl font-light">Jakhub Games</h1>
-  <Drawer>
+  <Drawer bind:open={drawer}>
     <DrawerTrigger>
       <div class="grid h-8 w-8 place-items-center">
         <User2 absoluteStrokeWidth />
@@ -51,22 +72,29 @@
             <TabsTrigger value="settings" class="w-full">Settings</TabsTrigger>
           </TabsList>
           <TabsContent value="profile">
+            <Error {error} />
             {#if $user}
-              <form method="post" action="?/logout" use:enhance>
+              <form on:submit|preventDefault={handleLogout}>
                 <Button type="submit" class="w-full">Logout</Button>
               </form>
             {:else}
-              <form method="post" action="?/login" use:enhance>
+              <form on:submit|preventDefault={handleLogin}>
                 <div class="flex flex-col gap-3">
                   <div class="flex flex-col gap-1">
                     <Label for="email">Email</Label>
-                    <Input name="email" id="email" />
+                    <Input name="email" id="email" bind:value={userData.email} disabled={loading} />
                   </div>
                   <div class="flex flex-col gap-1">
                     <Label for="password">Password</Label>
-                    <Input name="password" type="password" id="password" />
+                    <Input
+                      name="password"
+                      type="password"
+                      id="password"
+                      bind:value={userData.password}
+                      disabled={loading}
+                    />
                   </div>
-                  <Button type="submit">Login</Button>
+                  <Button type="submit" {loading}>Login</Button>
                 </div>
               </form>
               <a href="/register" class="mt-4 block text-center text-sm">Not registered yet?</a>
@@ -79,7 +107,17 @@
 </div>
 <main class="p-6">
   {#if $user}
-    <h2 class="pb-4 text-center text-xl">Welcome, {$user.email}!</h2>
+    <Card.Root class="mb-4">
+      <Card.Content class="p-2">
+        {#if data.onboarding}
+          <p class="flex items-center justify-center gap-6">
+            <Party size={32} /> Your email has been verified.<br />Welcome, {$user.email}!
+          </p>
+        {:else}
+          <p class="text-center">Welcome back, {$user.email}.</p>
+        {/if}
+      </Card.Content>
+    </Card.Root>
   {/if}
   <div class="m-auto grid w-full max-w-96 grid-cols-2 gap-4">
     <Game href="/sudoku" class="bg-violet-300">
