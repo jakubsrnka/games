@@ -2,6 +2,7 @@
   import { Drawer as DrawerPrimitive } from 'vaul-svelte';
   import DrawerOverlay from './drawer-overlay.svelte';
   import { cn } from '$lib/utils.js';
+  import DisableAutofocus from '$components/elements/DisableAutofocus.svelte';
 
   type $$Props = DrawerPrimitive.ContentProps;
 
@@ -18,6 +19,7 @@
     )}
     {...$$restProps}
   >
+    <DisableAutofocus />
     <div class="mx-auto mt-3 h-1 w-[120px] rounded-full bg-neutral-400" />
     <slot />
   </DrawerPrimitive.Content>
