@@ -27,7 +27,7 @@
 >
   <slot />
   {#if loading}
-    <div class="animate-spin-slow absolute right-2 grid h-6 w-6 place-content-center">
+    <div class="absolute right-2 grid h-6 w-6 animate-spin-slow place-content-center">
       <Loader />
     </div>
   {/if}
