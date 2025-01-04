@@ -58,6 +58,10 @@
   };
 </script>
 
+<svelte:head>
+  <title>Jakhub Games</title>
+</svelte:head>
+
 <div class="grid grid-cols-[40px_1fr_40px] items-center border-b p-3">
   <h1 class="col-start-2 text-center text-2xl font-light">Jakhub Games</h1>
   <Drawer bind:open={drawer}>

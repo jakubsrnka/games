@@ -17,6 +17,10 @@
   let newGame: () => Promise<void>;
 </script>
 
+<svelte:head>
+  <title>Sudoku | Jakhub Games</title>
+</svelte:head>
+
 <Header {newGame} />
 
 <div class="m-4 ml-auto mr-auto flex w-fit flex-col items-center gap-4">
