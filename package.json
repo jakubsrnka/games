@@ -10,7 +10,8 @@
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "lint": "prettier --check . && eslint .",
     "lint:fix": "bin/format",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "typegen": "supabase gen types typescript --project-id ynuoykysosficzfeqsnt > src/lib/types/supabase.ts && bin/format"
   },
   "devDependencies": {
     "@supabase/auth-helpers-sveltekit": "^0.12.0",

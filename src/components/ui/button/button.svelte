@@ -2,7 +2,7 @@
   import { Button as ButtonPrimitive } from 'bits-ui';
   import { cn } from '$lib/utils.js';
   import { buttonVariants, type Props, type Events } from './index.js';
-  import { Loader, Loader2 } from 'lucide-svelte';
+  import { Loader } from 'lucide-svelte';
 
   type $$Props = Props;
   type $$Events = Events;
