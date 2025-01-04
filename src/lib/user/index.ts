@@ -47,7 +47,6 @@ export const register = async (user: Register): AsyncApiResponse<RegisterRespons
     options: { emailRedirectTo: PUBLIC_URL }
   });
 
-  console.log(authResponse);
   const { data, error } = authResponse;
   if ((error !== null && !data) || !data.user) {
     return {
@@ -61,7 +60,6 @@ export const register = async (user: Register): AsyncApiResponse<RegisterRespons
     last_name: lname
   });
 
-  console.log(insertResponse);
   const { data: insert, error: insertError } = insertResponse;
 
   if (insertError !== null && !insert) {

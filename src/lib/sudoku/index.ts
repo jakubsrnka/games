@@ -44,7 +44,7 @@ export const getKeyValuePairsFromGridString = (grid: string): { [key: number]: D
   for (let i = 0; i < 81; i++) {
     const digit = grid.charAt(i);
     if (digit !== '.') {
-      pairs[i] = digit as unknown as Digit;
+      pairs[i] = parseInt(digit) as Digit;
     }
   }
   return pairs;
@@ -70,7 +70,7 @@ export const getKeyValuePairsFromCandidatesString = (
     for (let j = 0; j < 9; j++) {
       const digit = candidates.charAt(start + j);
       if (digit !== '.') {
-        set.add(parseInt(digit) as unknown as Digit);
+        set.add(parseInt(digit) as Digit);
       }
     }
     if (set.size > 0) {
