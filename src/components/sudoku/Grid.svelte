@@ -9,15 +9,16 @@
     VALID_GRID_INDEXES,
     type SudokuGrid
   } from 'sudoku-master';
+  import { checkSolution, getDigit } from '$lib/sudoku';
   import {
     decodeGrid,
-    getDigit,
     getKeyValuePairsFromCandidatesString,
     getKeyValuePairsFromGridString,
     getMapFromGrid,
+    getMapFromGridString,
     stringifyCandidates,
     stringifyGrid
-  } from '$lib/sudoku';
+  } from '$lib/sudoku/database';
   import { getSudoku } from 'sudoku-gen';
   import Script from '$components/utils/Script.svelte';
   import { candidatesToObject, figureOutCandidates } from '$lib/sudoku/candidates';
@@ -26,6 +27,10 @@
   import { user } from '$lib/client/user';
   import { supabase } from '$lib/shared/supabase';
   import { Skeleton } from '$components/ui/skeleton';
+  import Party from '$components/elements/Party.svelte';
+  import * as Dialog from '$components/ui/dialog';
+  import { Button } from '$components/ui/button';
+  import Time from '$components/elements/Time.svelte';
 
   let grid: SudokuGrid | null = null;
 
@@ -39,6 +44,13 @@
 
   let userCandidates: { [key: number]: Set<Digit> } = {};
 
+  let isSolved = false;
+  let time = 0;
+
+  const interval = setInterval(() => {
+    time++;
+  }, 1000);
+
   export const setDigit = (digit: Digit) => {
     if (!grid) return;
     if (selected !== null) {
@@ -49,6 +61,13 @@
       if ($sudokuSettings.autoDeselect) {
         selected = null;
       }
+      if (solution) {
+        isSolved = checkSolution(grid.digits, solution, userSolution);
+        if (isSolved) {
+          clearInterval(interval);
+          updateChanges();
+        }
+      }
     }
 
     updateChanges();
@@ -56,9 +75,12 @@
 
   export const removeDigit = () => {
     if (!grid) return;
-    if (selected !== null) delete userSolution[selected];
-    userSolution = userSolution;
-    candidates = figureOutCandidates(grid.candidates, userSolution);
+    if (selected !== null) {
+      delete userSolution[selected];
+      isSolved = false;
+      userSolution = userSolution;
+      candidates = figureOutCandidates(grid.candidates, userSolution);
+    }
 
     updateChanges();
   };
@@ -98,7 +120,8 @@
         .from('sudoku')
         .update({
           user_solution: stringifyGrid(getMapFromGrid(userSolution)),
-          user_candidates: stringifyCandidates(userCandidates)
+          user_candidates: stringifyCandidates(userCandidates),
+          time
         })
         .eq('sudoku', stringifyGrid(grid.digits));
     }
@@ -119,7 +142,12 @@
           userSolution = getKeyValuePairsFromGridString(result.user_solution);
           userCandidates = getKeyValuePairsFromCandidatesString(result.user_candidates);
           grid = decodeGrid(result.sudoku, result.candidates);
+          solution = getMapFromGridString(result.solution);
           candidates = figureOutCandidates(grid.candidates, userSolution);
+          isSolved = checkSolution(grid.digits, solution, userSolution);
+          time = result.time;
+
+          if (isSolved) clearInterval(interval);
           return;
         }
       } catch (error) {
@@ -152,6 +180,7 @@
   });
 </script>
 
+<Time {time} />
 <div class="relative grid w-fit grid-cols-9 border border-neutral-500">
   <LayoverGrid />
   {#if grid}
@@ -173,7 +202,7 @@
         class:outline-[0.5px]={selected === i}
         class:outline-neutral-500={selected === i}
         class:bg-violet-200={selected === i}
-        class:z-[100]={selected === i}
+        class:z-[10]={selected === i}
         class:text-green-600={isCorrect}
         class:bg-neutral-200={grid.digits.has(VALID_GRID_INDEXES[i])}
         class:cursor-default={grid.digits.has(VALID_GRID_INDEXES[i]) || isCorrect}
@@ -206,5 +235,23 @@
     {/each}
   {/if}
 </div>
+
+<Dialog.Root open={isSolved}>
+  <Dialog.Content>
+    <div class="m-auto mb-4">
+      <Party size={64} />
+    </div>
+    <Dialog.Header>
+      <Dialog.Title class="text-center">Congratulations!</Dialog.Title>
+    </Dialog.Header>
+    <Dialog.Description class="text-center">
+      You solved the Sudoku in <Time {time} />
+    </Dialog.Description>
+    <div class="grid grid-cols-2 gap-4">
+      <Button variant="outline">Statistics</Button>
+      <Button variant="outline">Play next</Button>
+    </div>
+  </Dialog.Content>
+</Dialog.Root>
 
 <slot {setDigit} {removeDigit} {setCandidate} {removeCandidates} />

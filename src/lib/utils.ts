@@ -54,3 +54,16 @@ export const flyAndScale = (
     easing: cubicOut
   };
 };
+
+export const secondsToTime = (time: number): [string | undefined, string | undefined, string] => {
+  const hours = Math.floor(time / 3600);
+  const minutes = Math.floor((time - hours * 3600) / 60);
+  const seconds = Math.floor(time - hours * 3600 - minutes * 60);
+  return [
+    hours > 0 ? hours.toLocaleString(undefined, { minimumIntegerDigits: 1 }) : undefined,
+    minutes > 0
+      ? minutes.toLocaleString(undefined, { minimumIntegerDigits: hours > 0 ? 2 : 1 })
+      : undefined,
+    seconds.toLocaleString(undefined, { minimumIntegerDigits: 2 })
+  ];
+};
