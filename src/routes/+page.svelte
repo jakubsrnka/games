@@ -67,7 +67,7 @@
   <Drawer bind:open={drawer}>
     <DrawerTrigger>
       <div
-        class="grid h-8 w-8 cursor-pointer place-items-center rounded border border-white transition-all hover:border-gray-300"
+        class="grid h-8 w-8 cursor-pointer place-items-center rounded border border-background transition-all hover:border-muted"
       >
         <User2 absoluteStrokeWidth />
       </div>
@@ -144,7 +144,10 @@
     </Card.Root>
   {/if}
   <div class="m-auto grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-    <Game href="/sudoku" class="border border-violet-400 bg-violet-300 hover:border-violet-700">
+    <Game
+      href="/sudoku"
+      class="border border-violet-400 bg-violet-300 hover:border-violet-700 hover:shadow-lg"
+    >
       <h2 slot="title" class="text-violet-900">Play Sudoku</h2>
       <Grid3x3 slot="icon" class="text-violet-900" size={32} absoluteStrokeWidth />
     </Game>

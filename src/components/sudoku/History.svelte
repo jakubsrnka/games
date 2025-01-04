@@ -27,7 +27,7 @@
         {#each data as item}
           <div class:pointer-events-none={item.completed} class:cursor-default={item.completed}>
             <a href={`/sudoku?id=${item.id}`}>
-              <Card.Root class="transition-all hover:border-gray-500">
+              <Card.Root class="transition-all hover:border-primary hover:shadow-lg">
                 <Card.Content class="flex gap-4 p-2">
                   <div class="relative p-2">
                     <MiniGrid grid={item.sudoku} />
@@ -35,7 +35,7 @@
                       <div
                         class="absolute inset-0 flex items-center justify-center backdrop-blur-sm"
                       >
-                        <Check class="text-lime-500" size="48" strokeWidth="3" />
+                        <Check class="text-green-600" size="48" strokeWidth="3" />
                       </div>
                     {/if}
                   </div>

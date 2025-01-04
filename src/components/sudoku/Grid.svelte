@@ -252,7 +252,7 @@
         class:bg-violet-200={selected === i}
         class:z-[10]={selected === i}
         class:text-green-600={isCorrect}
-        class:bg-neutral-200={grid.digits.has(VALID_GRID_INDEXES[i])}
+        class:bg-muted={grid.digits.has(VALID_GRID_INDEXES[i])}
         class:cursor-default={grid.digits.has(VALID_GRID_INDEXES[i]) || isCorrect}
         on:click={() => {
           if (!grid) return;
