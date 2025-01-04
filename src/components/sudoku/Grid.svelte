@@ -21,7 +21,11 @@
   } from '$lib/sudoku/database';
   import { getSudoku } from 'sudoku-gen';
   import Script from '$components/utils/Script.svelte';
-  import { candidatesToObject, figureOutCandidates } from '$lib/sudoku/candidates';
+  import {
+    candidatesToObject,
+    figureOutCandidates,
+    removeCandidates
+  } from '$lib/sudoku/candidates';
   import Candidates from './Candidates.svelte';
   import { onMount } from 'svelte';
   import { user } from '$lib/client/user';
@@ -72,6 +76,9 @@
       if ($sudokuSettings.autoCandidates) {
         candidates = figureOutCandidates(grid.candidates, userSolution);
       }
+      if ($sudokuSettings.autoDeleteCandidates) {
+        userCandidates = removeCandidates(userCandidates, userSolution);
+      }
       if ($sudokuSettings.autoDeselect) {
         selected = null;
       }
@@ -117,7 +124,7 @@
     updateChanges();
   };
 
-  export const removeCandidates = () => {
+  export const removeAllCandidates = () => {
     if (selected !== null && userCandidates[selected]) {
       delete userCandidates[selected];
     }
@@ -295,4 +302,4 @@
   </Dialog.Content>
 </Dialog.Root>
 
-<slot {setDigit} {removeDigit} {setCandidate} {removeCandidates} {newGame} />
+<slot {setDigit} {removeDigit} {setCandidate} {removeAllCandidates} {newGame} />

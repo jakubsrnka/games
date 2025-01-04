@@ -8,14 +8,10 @@ export const candidatesToObject = (grid: ReadonlyMap<GridIndex, readonly Digit[]
   return obj;
 };
 
-export const figureOutCandidates = (
-  originalCandidates: ReadonlyMap<GridIndex, readonly Digit[]>,
+export const removeCandidates = (
+  candidates: { [key: number]: Set<Digit> },
   userSolution: { [key: number]: Digit }
 ) => {
-  // this method needs to be called after every user input. It will update the candidates object and remove the user input from the candidates of the row, column and box.
-
-  const candidates = candidatesToObject(originalCandidates);
-
   Object.entries(userSolution).forEach(([key, digit]) => {
     const row = Math.floor(parseInt(key) / 9);
     const col = parseInt(key) % 9;
@@ -34,4 +30,13 @@ export const figureOutCandidates = (
   });
 
   return candidates;
+};
+
+export const figureOutCandidates = (
+  originalCandidates: ReadonlyMap<GridIndex, readonly Digit[]>,
+  userSolution: { [key: number]: Digit }
+) => {
+  const candidates = candidatesToObject(originalCandidates);
+
+  return removeCandidates(candidates, userSolution);
 };
