@@ -74,34 +74,41 @@
             <TabsTrigger value="settings" class="w-full">Settings</TabsTrigger>
           </TabsList>
           <TabsContent value="profile">
-            <Error {error} />
-            {#if $user}
-              <p class="pb-4">Logged in as {$user.email}</p>
-              <form on:submit|preventDefault={handleLogout}>
-                <Button type="submit" class="w-full">Logout</Button>
-              </form>
-            {:else}
-              <form on:submit|preventDefault={handleLogin}>
-                <div class="flex flex-col gap-3">
-                  <div class="flex flex-col gap-1">
-                    <Label for="email">Email</Label>
-                    <Input name="email" id="email" bind:value={userData.email} disabled={loading} />
+            <div class="flex flex-col gap-4">
+              <Error {error} />
+              {#if $user}
+                <p>Logged in as {$user.email}</p>
+                <form on:submit|preventDefault={handleLogout}>
+                  <Button type="submit" class="w-full">Logout</Button>
+                </form>
+              {:else}
+                <form on:submit|preventDefault={handleLogin}>
+                  <div class="flex flex-col gap-3">
+                    <div class="flex flex-col gap-1">
+                      <Label for="email">Email</Label>
+                      <Input
+                        name="email"
+                        id="email"
+                        bind:value={userData.email}
+                        disabled={loading}
+                      />
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <Label for="password">Password</Label>
+                      <Input
+                        name="password"
+                        type="password"
+                        id="password"
+                        bind:value={userData.password}
+                        disabled={loading}
+                      />
+                    </div>
+                    <Button type="submit" {loading}>Login</Button>
                   </div>
-                  <div class="flex flex-col gap-1">
-                    <Label for="password">Password</Label>
-                    <Input
-                      name="password"
-                      type="password"
-                      id="password"
-                      bind:value={userData.password}
-                      disabled={loading}
-                    />
-                  </div>
-                  <Button type="submit" {loading}>Login</Button>
-                </div>
-              </form>
-              <a href="/register" class="mt-4 block text-center text-sm">Not registered yet?</a>
-            {/if}
+                </form>
+                <a href="/register" class="block text-center text-sm">Not registered yet?</a>
+              {/if}
+            </div>
           </TabsContent>
           <TabsContent value="settings">
             <div class="flex items-center justify-between">
