@@ -11,4 +11,6 @@
   });
 </script>
 
-<slot />
+{#key $user}
+  <slot />
+{/key}
