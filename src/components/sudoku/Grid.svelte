@@ -25,6 +25,7 @@
   import { onMount } from 'svelte';
   import { user } from '$lib/client/user';
   import { supabase } from '$lib/shared/supabase';
+  import { Skeleton } from '$components/ui/skeleton';
 
   let grid: SudokuGrid | null = null;
 
@@ -106,21 +107,19 @@
   onMount(async () => {
     if ($user) {
       try {
+        // await new Promise((resolve) => setTimeout(resolve, 100000));
         const { data, error } = await supabase
           .from('sudoku')
           .select()
           .eq('completed', false)
+          .eq('difficulty', $sudokuSettings.difficulty)
           .order('created_at', { ascending: false });
         if (!error && data && data.length) {
           const result = data[0];
-          grid = decodeGrid(result.sudoku, result.candidates);
-          candidates = getKeyValuePairsFromCandidatesString(result.candidates);
-          userCandidates = getKeyValuePairsFromCandidatesString(result.user_candidates);
           userSolution = getKeyValuePairsFromGridString(result.user_solution);
-          console.log(candidates, result.candidates);
-          console.log(grid);
-          console.log(userCandidates, result.user_candidates);
-          console.log(userSolution, result.user_solution);
+          userCandidates = getKeyValuePairsFromCandidatesString(result.user_candidates);
+          grid = decodeGrid(result.sudoku, result.candidates);
+          candidates = figureOutCandidates(grid.candidates, userSolution);
           return;
         }
       } catch (error) {
@@ -137,7 +136,6 @@
     solution = solveWithBacktracking(grid) as ReadonlyMap<GridIndex, Digit> | null;
 
     candidates = candidatesToObject(grid.candidates);
-    console.log(candidates, grid.candidates);
 
     if ($user) {
       await supabase.from('sudoku').insert([
@@ -155,8 +153,8 @@
 </script>
 
 <div class="relative grid w-fit grid-cols-9 border border-neutral-500">
+  <LayoverGrid />
   {#if grid}
-    <LayoverGrid />
     {#each Array.from({ length: 81 }) as _, i}
       {@const isCorrect =
         $sudokuSettings.showCorrect && solution && getDigit(i, solution) === userSolution[i]}
@@ -174,7 +172,7 @@
         class:border-[1px]={selected === i}
         class:outline-[0.5px]={selected === i}
         class:outline-neutral-500={selected === i}
-        class:bg-amber-300={selected === i}
+        class:bg-violet-200={selected === i}
         class:z-[100]={selected === i}
         class:text-green-600={isCorrect}
         class:bg-neutral-200={grid.digits.has(VALID_GRID_INDEXES[i])}
@@ -189,8 +187,7 @@
         }}
       >
         <span class="text-xl">
-          {getDigit(i, grid.digits)}
-          {userSolution[i] ?? ''}
+          {userSolution[i] ?? getDigit(i, grid.digits)}
         </span>
         {#if !userSolution[i] && $sudokuSettings.autoCandidates && candidates[i]}
           <Candidates candidates={candidates[i]} />
@@ -198,6 +195,14 @@
           <Candidates candidates={userCandidates[i]} />
         {/if}
       </button>
+    {/each}
+  {:else}
+    {#each Array.from({ length: 81 }) as _, i}
+      {#if i % 2 === 0}
+        <Skeleton class="h-9 w-9 rounded-none" />
+      {:else}
+        <div class="h-9 w-9"></div>
+      {/if}
     {/each}
   {/if}
 </div>
