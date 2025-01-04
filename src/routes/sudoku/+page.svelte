@@ -20,7 +20,7 @@
 <Header {newGame} />
 
 <div class="m-4 ml-auto mr-auto flex w-fit flex-col items-center gap-4">
-  <Grid let:setDigit let:removeDigit let:setCandidate let:removeCandidates bind:newGame bind:id>
+  <Grid let:setDigit let:removeDigit let:setCandidate let:removeAllCandidates bind:newGame bind:id>
     <Tabs class="w-full">
       <div class="m-auto w-fit">
         <TabsList>
@@ -36,7 +36,7 @@
         </TabsContent>
         <TabsContent value="candidates">
           <div class="grid w-full grid-cols-5 gap-2">
-            <Setter bind:value f={setCandidate} x={removeCandidates} candidates />
+            <Setter bind:value f={setCandidate} x={removeAllCandidates} candidates />
           </div>
           <div class=" m-auto mt-2 flex w-fit cursor-pointer items-center gap-2">
             <Switch bind:checked={$sudokuSettings.autoCandidates} id="auto" />
