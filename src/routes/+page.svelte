@@ -62,7 +62,7 @@
   <h1 class="col-start-2 text-center text-2xl font-light">Jakhub Games</h1>
   <Drawer bind:open={drawer}>
     <DrawerTrigger>
-      <div class="grid h-8 w-8 place-items-center">
+      <div class="grid h-8 w-8 cursor-pointer place-items-center">
         <User2 absoluteStrokeWidth />
       </div>
     </DrawerTrigger>

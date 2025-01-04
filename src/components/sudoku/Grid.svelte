@@ -31,6 +31,9 @@
   import * as Dialog from '$components/ui/dialog';
   import { Button } from '$components/ui/button';
   import Time from '$components/elements/Time.svelte';
+  import type { Difficulty } from '$lib/types/sudoku';
+
+  export let id: string | null;
 
   let grid: SudokuGrid | null = null;
 
@@ -123,8 +126,11 @@
   };
 
   const updateChanges = async () => {
+    console.log('updateChanges');
     if (!grid) return;
+    console.log('updateChanges grid');
     if ($user) {
+      console.log('updateChanges user');
       await supabase
         .from('sudoku')
         .update({
@@ -140,7 +146,9 @@
   };
 
   export const newGame = async () => {
+    stopTimer();
     isSolved = false;
+    id = null;
     startTimer();
 
     grid = parseGrid(getSudoku($sudokuSettings.difficulty).puzzle, true);
@@ -175,15 +183,22 @@
   onMount(async () => {
     if ($user) {
       try {
-        // await new Promise((resolve) => setTimeout(resolve, 100000));
         const { data, error } = await supabase
           .from('sudoku')
           .select()
           .eq('completed', false)
-          .eq('difficulty', $sudokuSettings.difficulty)
+          .eq(id ? 'id' : 'difficulty', id ? parseInt(id) : $sudokuSettings.difficulty)
           .order('created_at', { ascending: false });
+        console.log(
+          id !== null ? 'id' : 'difficulty',
+          id !== null ? id : $sudokuSettings.difficulty
+        );
         if (!error && data && data.length) {
+          console.log(data);
           const result = data[0];
+
+          $sudokuSettings.difficulty = result.difficulty as Difficulty;
+
           userSolution = getKeyValuePairsFromGridString(result.user_solution);
           userCandidates = getKeyValuePairsFromCandidatesString(result.user_candidates);
           grid = decodeGrid(result.sudoku, result.candidates);

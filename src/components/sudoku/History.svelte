@@ -28,39 +28,43 @@
     {:then data}
       {#if data && data.length > 0}
         {#each data as item}
-          <button class="w-full" disabled={item.completed}>
-            <Card.Root
-              class="mb-4 transition-all {!item.completed
-                ? 'hover:border-gray-500'
-                : 'hover:border-gray-200'}"
-            >
-              <Card.Content class="flex gap-4 p-2">
-                <div class="relative p-2">
-                  <MiniGrid grid={item.sudoku} />
-                  {#if item.completed}
-                    <div class="absolute inset-0 flex items-center justify-center backdrop-blur-sm">
-                      <Check class="text-lime-500" size="48" strokeWidth="3" />
-                    </div>
-                  {/if}
-                </div>
-                <div class="flex w-full flex-col gap-2">
-                  <div class="flex w-full items-center justify-between">
-                    <div class="font-mono">
-                      <Time time={item.time} />
-                    </div>
-                    <Badge variant="outline">
-                      {item.difficulty}
-                    </Badge>
-                  </div>
-                  <div class="mb-0 mt-auto flex items-center justify-end gap-4">
-                    {#if !item.completed}
-                      <Completed grid={item.sudoku} userSolution={item.user_solution} progressBar />
+          <div class:pointer-events-none={item.completed} class:cursor-default={item.completed}>
+            <a href={`/sudoku?id=${item.id}`}>
+              <Card.Root class="mb-4 transition-all hover:border-gray-500">
+                <Card.Content class="flex gap-4 p-2">
+                  <div class="relative p-2">
+                    <MiniGrid grid={item.sudoku} />
+                    {#if item.completed}
+                      <div
+                        class="absolute inset-0 flex items-center justify-center backdrop-blur-sm"
+                      >
+                        <Check class="text-lime-500" size="48" strokeWidth="3" />
+                      </div>
                     {/if}
                   </div>
-                </div>
-              </Card.Content>
-            </Card.Root>
-          </button>
+                  <div class="flex w-full flex-col gap-2">
+                    <div class="flex w-full items-center justify-between">
+                      <div class="font-mono">
+                        <Time time={item.time} />
+                      </div>
+                      <Badge variant="outline">
+                        {item.difficulty}
+                      </Badge>
+                    </div>
+                    <div class="mb-0 mt-auto flex items-center justify-end gap-4">
+                      {#if !item.completed}
+                        <Completed
+                          grid={item.sudoku}
+                          userSolution={item.user_solution}
+                          progressBar
+                        />
+                      {/if}
+                    </div>
+                  </div>
+                </Card.Content>
+              </Card.Root>
+            </a>
+          </div>
         {/each}
       {:else}
         <Card.Root class="mb-4">

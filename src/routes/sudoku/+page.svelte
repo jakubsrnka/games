@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { page } from '$app/stores';
   import Grid from '$components/sudoku/Grid.svelte';
   import Header from '$components/sudoku/Header.svelte';
   import Setter from '$components/sudoku/Setter.svelte';
@@ -11,38 +12,38 @@
 
   let value: Digit | null;
 
+  let id: string | null = $page.url.searchParams.get('id');
+
   let newGame: () => Promise<void>;
 </script>
 
 <Header {newGame} />
 
 <div class="m-4 ml-auto mr-auto flex w-fit flex-col items-center gap-4">
-  {#key $sudokuSettings.difficulty}
-    <Grid let:setDigit let:removeDigit let:setCandidate let:removeCandidates bind:newGame>
-      <Tabs class="w-full">
-        <div class="m-auto w-fit">
-          <TabsList>
-            <TabsTrigger value="values">Values</TabsTrigger>
-            <TabsTrigger value="candidates">Candidates</TabsTrigger>
-          </TabsList>
-        </div>
-        <div class="w-full">
-          <TabsContent value="values">
-            <div class="grid w-full grid-cols-5 gap-2">
-              <Setter bind:value f={setDigit} x={removeDigit} />
-            </div>
-          </TabsContent>
-          <TabsContent value="candidates">
-            <div class="grid w-full grid-cols-5 gap-2">
-              <Setter bind:value f={setCandidate} x={removeCandidates} candidates />
-            </div>
-            <div class=" m-auto mt-2 flex w-fit cursor-pointer items-center gap-2">
-              <Switch bind:checked={$sudokuSettings.autoCandidates} id="auto" />
-              <Label for="auto">Auto candidates</Label>
-            </div>
-          </TabsContent>
-        </div>
-      </Tabs>
-    </Grid>
-  {/key}
+  <Grid let:setDigit let:removeDigit let:setCandidate let:removeCandidates bind:newGame bind:id>
+    <Tabs class="w-full">
+      <div class="m-auto w-fit">
+        <TabsList>
+          <TabsTrigger value="values">Values</TabsTrigger>
+          <TabsTrigger value="candidates">Candidates</TabsTrigger>
+        </TabsList>
+      </div>
+      <div class="w-full">
+        <TabsContent value="values">
+          <div class="grid w-full grid-cols-5 gap-2">
+            <Setter bind:value f={setDigit} x={removeDigit} />
+          </div>
+        </TabsContent>
+        <TabsContent value="candidates">
+          <div class="grid w-full grid-cols-5 gap-2">
+            <Setter bind:value f={setCandidate} x={removeCandidates} candidates />
+          </div>
+          <div class=" m-auto mt-2 flex w-fit cursor-pointer items-center gap-2">
+            <Switch bind:checked={$sudokuSettings.autoCandidates} id="auto" />
+            <Label for="auto">Auto candidates</Label>
+          </div>
+        </TabsContent>
+      </div>
+    </Tabs>
+  </Grid>
 </div>

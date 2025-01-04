@@ -83,7 +83,13 @@
                   <SelectGroup>
                     <SelectLabel>Difficulty</SelectLabel>
                     {#each difficulties as dif}
-                      <SelectItem value={dif} on:click={() => ($sudokuSettings.difficulty = dif)}>
+                      <SelectItem
+                        value={dif}
+                        on:click={() => {
+                          $sudokuSettings.difficulty = dif;
+                          newGame();
+                        }}
+                      >
                         {capitalize(dif)}
                       </SelectItem>
                     {/each}
