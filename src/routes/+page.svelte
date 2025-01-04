@@ -14,6 +14,8 @@
   import type { PageData } from './$types';
   import Party from '$components/elements/Party.svelte';
   import * as Card from '$components/ui/card';
+  import History from '$components/sudoku/History.svelte';
+  import { Separator } from '$components/ui/select';
 
   export let data: PageData;
 
@@ -105,9 +107,9 @@
     </DrawerContent>
   </Drawer>
 </div>
-<main class="p-6">
+<main class="flex flex-col gap-4 p-6">
   {#if $user}
-    <Card.Root class="mb-4">
+    <Card.Root>
       <Card.Content class="p-2">
         {#if data.onboarding}
           <p class="flex items-center justify-center gap-6">
@@ -119,10 +121,12 @@
       </Card.Content>
     </Card.Root>
   {/if}
-  <div class="m-auto grid w-full max-w-96 grid-cols-2 gap-4">
+  <div class="m-auto grid w-full max-w-96">
     <Game href="/sudoku" class="bg-violet-300">
-      <h2 slot="title">Sudoku</h2>
+      <h2 slot="title">Play Sudoku</h2>
       <Grid3x3 slot="icon" size={32} absoluteStrokeWidth />
     </Game>
   </div>
+  <Separator />
+  <History />
 </main>

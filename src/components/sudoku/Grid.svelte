@@ -133,7 +133,9 @@
           time,
           completed: isSolved
         })
-        .eq('sudoku', stringifyGrid(grid.digits));
+        .eq('sudoku', stringifyGrid(grid.digits))
+        .eq('difficulty', $sudokuSettings.difficulty)
+        .eq('user_id', $user.id);
     }
   };
 
@@ -271,7 +273,7 @@
     </Dialog.Description>
     <div class="grid grid-cols-2 gap-4">
       <Button variant="outline">Statistics</Button>
-      <Button variant="outline" on:click={newGame} on:keydown={newGame}>Play next</Button>
+      <Button variant="outline" on:click={newGame} on:keydown={newGame}>New Game</Button>
     </div>
   </Dialog.Content>
 </Dialog.Root>

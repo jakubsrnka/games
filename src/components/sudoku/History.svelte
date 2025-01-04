@@ -1,0 +1,80 @@
+<script lang="ts">
+  import { user } from '$lib/client/user';
+  import * as Card from '$components/ui/card';
+  import { supabase } from '$lib/shared/supabase';
+  import Time from '$components/elements/Time.svelte';
+  import { Check } from 'lucide-svelte';
+  import MiniGrid from './MiniGrid.svelte';
+  import Completed from './Completed.svelte';
+  import { Badge } from '$components/ui/badge';
+</script>
+
+<section>
+  {#if $user}
+    {#await supabase
+      .from('sudoku')
+      .select()
+      .order('created_at', { ascending: false })
+      .then(({ data }) => {
+        if (data) {
+          return data;
+        }
+      })}
+      <Card.Root class="mb-4">
+        <Card.Content class="p-2">
+          <p class="text-center">Loading...</p>
+        </Card.Content>
+      </Card.Root>
+    {:then data}
+      {#if data && data.length > 0}
+        {#each data as item}
+          <button class="w-full" disabled={item.completed}>
+            <Card.Root
+              class="mb-4 transition-all {!item.completed
+                ? 'hover:border-gray-500'
+                : 'hover:border-gray-200'}"
+            >
+              <Card.Content class="flex gap-4 p-2">
+                <div class="relative p-2">
+                  <MiniGrid grid={item.sudoku} />
+                  {#if item.completed}
+                    <div class="absolute inset-0 flex items-center justify-center backdrop-blur-sm">
+                      <Check class="text-lime-500" size="48" strokeWidth="3" />
+                    </div>
+                  {/if}
+                </div>
+                <div class="flex w-full flex-col gap-2">
+                  <div class="flex w-full items-center justify-between">
+                    <div class="font-mono">
+                      <Time time={item.time} />
+                    </div>
+                    <Badge variant="outline">
+                      {item.difficulty}
+                    </Badge>
+                  </div>
+                  <div class="mb-0 mt-auto flex items-center justify-end gap-4">
+                    {#if !item.completed}
+                      <Completed grid={item.sudoku} userSolution={item.user_solution} progressBar />
+                    {/if}
+                  </div>
+                </div>
+              </Card.Content>
+            </Card.Root>
+          </button>
+        {/each}
+      {:else}
+        <Card.Root class="mb-4">
+          <Card.Content class="p-2">
+            <p class="text-center">No history found.</p>
+          </Card.Content>
+        </Card.Root>
+      {/if}
+    {/await}
+  {:else}
+    <Card.Root class="mb-4">
+      <Card.Content class="p-2">
+        <p class="text-center">You are not logged in. Please login to access the history.</p>
+      </Card.Content>
+    </Card.Root>
+  {/if}
+</section>
