@@ -37,10 +37,10 @@
     <DrawerContent>
       <div class="flex h-[80vh] flex-col">
         <Nav>
-          <div class="m-auto">Settings</div>
+          <div class="m-auto md:col-start-2">Settings</div>
         </Nav>
-        <ScrollArea class="">
-          <div class="flex flex-col items-start gap-4 p-4">
+        <ScrollArea>
+          <div class="m-auto flex max-w-3xl flex-col items-start gap-4 p-4">
             <div class="flex w-full cursor-pointer items-center gap-2">
               <Switch id="auto-deselect" bind:checked={$sudokuSettings.autoDeselect} />
               <Label class="w-full cursor-pointer" for="auto-deselect">Auto deselect</Label>

@@ -62,11 +62,13 @@
   <title>Jakhub Games</title>
 </svelte:head>
 
-<div class="grid grid-cols-[40px_1fr_40px] items-center border-b p-3">
+<div class="grid grid-cols-[32px_1fr_32px] items-center border-b p-3">
   <h1 class="col-start-2 text-center text-2xl font-light">Jakhub Games</h1>
   <Drawer bind:open={drawer}>
     <DrawerTrigger>
-      <div class="grid h-8 w-8 cursor-pointer place-items-center">
+      <div
+        class="grid h-8 w-8 cursor-pointer place-items-center rounded border border-white transition-all hover:border-gray-300"
+      >
         <User2 absoluteStrokeWidth />
       </div>
     </DrawerTrigger>
@@ -78,7 +80,7 @@
             <TabsTrigger value="settings" class="w-full">Settings</TabsTrigger>
           </TabsList>
           <TabsContent value="profile">
-            <div class="flex flex-col gap-4">
+            <div class="m-auto flex max-w-3xl flex-col gap-4">
               <Error {error} />
               {#if $user}
                 <p>Logged in as {$user.email}</p>
@@ -115,9 +117,11 @@
             </div>
           </TabsContent>
           <TabsContent value="settings">
-            <div class="flex items-center justify-between">
-              <h3 class="font-semibold">Sudoku settings</h3>
-              <Button href="/sudoku" class="h-7">Sudoku page</Button>
+            <div class="m-auto max-w-3xl">
+              <div class="flex items-center justify-between">
+                <h3 class="font-semibold">Sudoku settings</h3>
+                <Button href="/sudoku" class="h-7">Sudoku page</Button>
+              </div>
             </div>
           </TabsContent>
         </Tabs>
@@ -125,7 +129,7 @@
     </DrawerContent>
   </Drawer>
 </div>
-<main class="flex flex-col gap-4 p-6">
+<main class="m-auto flex max-w-7xl flex-col gap-4 p-6">
   {#if $user}
     <Card.Root>
       <Card.Content class="p-2">
@@ -139,10 +143,10 @@
       </Card.Content>
     </Card.Root>
   {/if}
-  <div class="m-auto grid w-full max-w-96">
-    <Game href="/sudoku" class="bg-violet-300">
-      <h2 slot="title">Play Sudoku</h2>
-      <Grid3x3 slot="icon" size={32} absoluteStrokeWidth />
+  <div class="m-auto grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <Game href="/sudoku" class="border border-violet-400 bg-violet-300 hover:border-violet-700">
+      <h2 slot="title" class="text-violet-900">Play Sudoku</h2>
+      <Grid3x3 slot="icon" class="text-violet-900" size={32} absoluteStrokeWidth />
     </Game>
   </div>
   <Separator />

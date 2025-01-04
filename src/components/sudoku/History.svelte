@@ -7,9 +7,10 @@
   import MiniGrid from './MiniGrid.svelte';
   import Completed from './Completed.svelte';
   import { Badge } from '$components/ui/badge';
+  import Skeleton from '$components/ui/skeleton/skeleton.svelte';
 </script>
 
-<section>
+<section class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
   {#if $user}
     {#await supabase
       .from('sudoku')
@@ -20,17 +21,13 @@
           return data;
         }
       })}
-      <Card.Root class="mb-4">
-        <Card.Content class="p-2">
-          <p class="text-center">Loading...</p>
-        </Card.Content>
-      </Card.Root>
+      <Skeleton />
     {:then data}
       {#if data && data.length > 0}
         {#each data as item}
           <div class:pointer-events-none={item.completed} class:cursor-default={item.completed}>
             <a href={`/sudoku?id=${item.id}`}>
-              <Card.Root class="mb-4 transition-all hover:border-gray-500">
+              <Card.Root class="transition-all hover:border-gray-500">
                 <Card.Content class="flex gap-4 p-2">
                   <div class="relative p-2">
                     <MiniGrid grid={item.sudoku} />
@@ -67,7 +64,7 @@
           </div>
         {/each}
       {:else}
-        <Card.Root class="mb-4">
+        <Card.Root>
           <Card.Content class="p-2">
             <p class="text-center">No history found.</p>
           </Card.Content>

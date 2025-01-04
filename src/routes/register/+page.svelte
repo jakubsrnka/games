@@ -46,7 +46,7 @@
   <h1>Register</h1>
 </Nav>
 
-<div class="flex flex-col gap-4 p-6">
+<div class="m-auto flex max-w-3xl flex-col gap-4 p-6">
   <Error {error} />
   <form class="contents" on:submit|preventDefault={handleRegister}>
     <div class="grid grid-cols-2 gap-4">
