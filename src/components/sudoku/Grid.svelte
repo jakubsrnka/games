@@ -47,9 +47,19 @@
   let isSolved = false;
   let time = 0;
 
-  const interval = setInterval(() => {
+  let interval = setInterval(() => {
     time++;
   }, 1000);
+
+  const startTimer = () => {
+    interval = setInterval(() => {
+      time++;
+    }, 1000);
+  };
+
+  const stopTimer = () => {
+    clearInterval(interval);
+  };
 
   export const setDigit = (digit: Digit) => {
     if (!grid) return;
@@ -64,8 +74,7 @@
       if (solution) {
         isSolved = checkSolution(grid.digits, solution, userSolution);
         if (isSolved) {
-          clearInterval(interval);
-          updateChanges();
+          stopTimer();
         }
       }
     }
@@ -121,9 +130,43 @@
         .update({
           user_solution: stringifyGrid(getMapFromGrid(userSolution)),
           user_candidates: stringifyCandidates(userCandidates),
-          time
+          time,
+          completed: isSolved
         })
         .eq('sudoku', stringifyGrid(grid.digits));
+    }
+  };
+
+  export const newGame = async () => {
+    isSolved = false;
+    startTimer();
+
+    grid = parseGrid(getSudoku($sudokuSettings.difficulty).puzzle, true);
+
+    if (!grid) {
+      newGame();
+      return;
+    }
+
+    solution = solveWithBacktracking(grid) as ReadonlyMap<GridIndex, Digit> | null;
+
+    candidates = candidatesToObject(grid.candidates);
+
+    userSolution = {};
+    userCandidates = {};
+    time = 0;
+
+    if ($user) {
+      await supabase.from('sudoku').insert([
+        {
+          sudoku: stringifyGrid(grid.digits),
+          solution: stringifyGrid(solution ?? new Map()),
+          user_solution: stringifyGrid(getMapFromGrid(userSolution)),
+          difficulty: $sudokuSettings.difficulty,
+          candidates: stringifyCandidates(candidates),
+          user_candidates: stringifyCandidates(userCandidates)
+        }
+      ]);
     }
   };
 
@@ -147,7 +190,7 @@
           isSolved = checkSolution(grid.digits, solution, userSolution);
           time = result.time;
 
-          if (isSolved) clearInterval(interval);
+          if (isSolved) stopTimer();
           return;
         }
       } catch (error) {
@@ -155,28 +198,7 @@
       }
     }
 
-    grid = parseGrid(getSudoku($sudokuSettings.difficulty).puzzle, true);
-
-    if (!grid) {
-      return;
-    }
-
-    solution = solveWithBacktracking(grid) as ReadonlyMap<GridIndex, Digit> | null;
-
-    candidates = candidatesToObject(grid.candidates);
-
-    if ($user) {
-      await supabase.from('sudoku').insert([
-        {
-          sudoku: stringifyGrid(grid.digits),
-          solution: stringifyGrid(solution ?? new Map()),
-          user_solution: stringifyGrid(getMapFromGrid(userSolution)),
-          difficulty: $sudokuSettings.difficulty,
-          candidates: stringifyCandidates(candidates),
-          user_candidates: stringifyCandidates(userCandidates)
-        }
-      ]);
-    }
+    await newGame();
   });
 </script>
 
@@ -249,9 +271,9 @@
     </Dialog.Description>
     <div class="grid grid-cols-2 gap-4">
       <Button variant="outline">Statistics</Button>
-      <Button variant="outline">Play next</Button>
+      <Button variant="outline" on:click={newGame} on:keydown={newGame}>Play next</Button>
     </div>
   </Dialog.Content>
 </Dialog.Root>
 
-<slot {setDigit} {removeDigit} {setCandidate} {removeCandidates} />
+<slot {setDigit} {removeDigit} {setCandidate} {removeCandidates} {newGame} />

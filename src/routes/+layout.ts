@@ -32,7 +32,7 @@ export const load: LayoutLoad = async ({ data, url }) => {
   });
 
   if (authResponse.error) {
-    console.error('Failed to set authResponse', authResponse.error);
+    console.log('Failed to set authResponse', authResponse.error);
     return;
   }
 

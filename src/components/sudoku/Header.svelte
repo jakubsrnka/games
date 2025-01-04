@@ -1,5 +1,6 @@
 <script lang="ts">
   import Nav from '$components/elements/header/Nav.svelte';
+  import { Button } from '$components/ui/button';
   import { Drawer, DrawerContent, DrawerTrigger } from '$components/ui/drawer';
   import Label from '$components/ui/label/label.svelte';
   import ScrollArea from '$components/ui/scroll-area/scroll-area.svelte';
@@ -18,6 +19,8 @@
   import { difficulties } from '$lib/sudoku';
   import { sudokuSettings } from '$lib/sudoku/stores';
   import { ChevronLeft, Settings2 } from 'lucide-svelte';
+
+  export let newGame: () => Promise<void>;
 </script>
 
 <Nav>
@@ -66,7 +69,7 @@
             </div>
             <span class="text-xs">
               This means your custom candidates will be deleted while playing the game. Disabling
-              this might cause worse readabilty though.
+              this might cause worse readabilty.
             </span>
 
             <Separator />
@@ -87,7 +90,16 @@
                   </SelectGroup>
                 </SelectContent>
               </Select>
-              <span class="text-xs">Changing difficulty reset the current game.</span>
+              <span class="text-xs">Changing difficulty resets the current game.</span>
+            </div>
+
+            <Separator />
+
+            <div class="w-full">
+              <Button variant="destructive" class="w-full" on:click={newGame} on:keydown={newGame}
+                >New Game</Button
+              >
+              <span class="text-xs">This resets the current game.</span>
             </div>
           </div>
         </ScrollArea>

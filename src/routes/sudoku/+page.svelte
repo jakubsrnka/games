@@ -10,13 +10,15 @@
   import { type Digit } from 'sudoku-master';
 
   let value: Digit | null;
+
+  let newGame: () => Promise<void>;
 </script>
 
-<Header />
+<Header {newGame} />
 
 <div class="m-4 ml-auto mr-auto flex w-fit flex-col items-center gap-4">
   {#key $sudokuSettings.difficulty}
-    <Grid let:setDigit let:removeDigit let:setCandidate let:removeCandidates>
+    <Grid let:setDigit let:removeDigit let:setCandidate let:removeCandidates bind:newGame>
       <Tabs class="w-full">
         <div class="m-auto w-fit">
           <TabsList>
