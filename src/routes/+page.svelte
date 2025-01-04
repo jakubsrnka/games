@@ -76,6 +76,7 @@
           <TabsContent value="profile">
             <Error {error} />
             {#if $user}
+              <p class="pb-4">Logged in as {$user.email}</p>
               <form on:submit|preventDefault={handleLogout}>
                 <Button type="submit" class="w-full">Logout</Button>
               </form>
@@ -102,6 +103,12 @@
               <a href="/register" class="mt-4 block text-center text-sm">Not registered yet?</a>
             {/if}
           </TabsContent>
+          <TabsContent value="settings">
+            <div class="flex items-center justify-between">
+              <h3 class="font-semibold">Sudoku settings</h3>
+              <Button href="/sudoku" class="h-7">Sudoku page</Button>
+            </div>
+          </TabsContent>
         </Tabs>
       </div>
     </DrawerContent>
@@ -116,7 +123,7 @@
             <Party size={32} /> Your email has been verified.<br />Welcome, {$user.email}!
           </p>
         {:else}
-          <p class="text-center">Welcome back, {$user.email}.</p>
+          <p class="text-center">Welcome back, {$user.email}!</p>
         {/if}
       </Card.Content>
     </Card.Root>

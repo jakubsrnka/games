@@ -47,7 +47,7 @@
                       <div class="font-mono">
                         <Time time={item.time} />
                       </div>
-                      <Badge variant="outline">
+                      <Badge>
                         {item.difficulty}
                       </Badge>
                     </div>

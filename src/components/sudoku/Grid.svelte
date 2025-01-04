@@ -32,6 +32,7 @@
   import { Button } from '$components/ui/button';
   import Time from '$components/elements/Time.svelte';
   import type { Difficulty } from '$lib/types/sudoku';
+  import { Badge } from '$components/ui/badge';
 
   export let id: string | null;
 
@@ -126,11 +127,7 @@
   };
 
   const updateChanges = async () => {
-    console.log('updateChanges');
-    if (!grid) return;
-    console.log('updateChanges grid');
-    if ($user) {
-      console.log('updateChanges user');
+    if (grid && $user) {
       await supabase
         .from('sudoku')
         .update({
@@ -149,6 +146,7 @@
     stopTimer();
     isSolved = false;
     id = null;
+    history.replaceState(null, '', '/sudoku');
     startTimer();
 
     grid = parseGrid(getSudoku($sudokuSettings.difficulty).puzzle, true);
@@ -189,12 +187,7 @@
           .eq('completed', false)
           .eq(id ? 'id' : 'difficulty', id ? parseInt(id) : $sudokuSettings.difficulty)
           .order('created_at', { ascending: false });
-        console.log(
-          id !== null ? 'id' : 'difficulty',
-          id !== null ? id : $sudokuSettings.difficulty
-        );
         if (!error && data && data.length) {
-          console.log(data);
           const result = data[0];
 
           $sudokuSettings.difficulty = result.difficulty as Difficulty;
@@ -219,7 +212,14 @@
   });
 </script>
 
-<Time {time} />
+<div class="flex w-full items-center justify-between gap-4">
+  <div class="font-mono">
+    <Time {time} />
+  </div>
+  <Badge>
+    {$sudokuSettings.difficulty}
+  </Badge>
+</div>
 <div class="relative grid w-fit grid-cols-9 border border-neutral-500">
   <LayoverGrid />
   {#if grid}
@@ -287,7 +287,7 @@
       You solved the Sudoku in <Time {time} />
     </Dialog.Description>
     <div class="grid grid-cols-2 gap-4">
-      <Button variant="outline">Statistics</Button>
+      <Button variant="outline" href="/">Home</Button>
       <Button variant="outline" on:click={newGame} on:keydown={newGame}>New Game</Button>
     </div>
   </Dialog.Content>
