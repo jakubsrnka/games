@@ -261,7 +261,7 @@
         </span>
         {#if !userSolution[i] && $sudokuSettings.autoCandidates && candidates[i]}
           <Candidates candidates={candidates[i]} />
-        {:else if userCandidates[i]}
+        {:else if !userSolution[i] && userCandidates[i]}
           <Candidates candidates={userCandidates[i]} />
         {/if}
       </button>
