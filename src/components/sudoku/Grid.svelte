@@ -143,11 +143,17 @@
   };
 
   export const newGame = async () => {
-    stopTimer();
+    time = 0;
     isSolved = false;
     id = null;
-    history.replaceState(null, '', '/sudoku');
+    selected = null;
+    userSolution = {};
+    userCandidates = {};
+
+    stopTimer();
     startTimer();
+
+    history.replaceState(null, '', '/sudoku');
 
     grid = parseGrid(getSudoku($sudokuSettings.difficulty).puzzle, true);
 
@@ -159,10 +165,6 @@
     solution = solveWithBacktracking(grid) as ReadonlyMap<GridIndex, Digit> | null;
 
     candidates = candidatesToObject(grid.candidates);
-
-    userSolution = {};
-    userCandidates = {};
-    time = 0;
 
     if ($user) {
       await supabase.from('sudoku').insert([
