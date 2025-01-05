@@ -21,6 +21,7 @@
   <link rel="manifest" href="/favicon/site.webmanifest" />
 
   <meta property="og:title" content="Jakhub Games" />
+  <meta property="og:site_name" content="Jakhub Games" />
   <meta property="og:description" content="Play games online!" />
   <meta property="og:image" content="https://games.jakhub.cz/favicon/og-image.png" />
   <meta property="og:type" content="website" />
@@ -32,7 +33,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 </svelte:head>
 
-<ModeWatcher />
+<ModeWatcher themeColors={{ light: '#fff', dark: '#0a0a0a' }} />
 {#key $user}
   <slot />
 {/key}
