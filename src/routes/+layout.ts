@@ -1,5 +1,6 @@
 import { userProfile } from '$lib/client/user';
 import { supabase } from '$lib/shared/supabase';
+import { loadAllSettings } from '$lib/user/settings';
 import type { LayoutLoad } from './$types';
 
 export const ssr = false;
@@ -52,7 +53,8 @@ export const load: LayoutLoad = async ({ data, url }) => {
     } else if (userDataResponse.data && userDataResponse.data.length) {
       userProfile.set(userDataResponse.data[0]);
     }
-    console.log('User data:', userDataResponse.data);
+
+    await loadAllSettings();
   } catch (error) {
     console.log('Error fetching user data:', error);
   }
