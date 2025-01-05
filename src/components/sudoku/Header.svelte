@@ -21,6 +21,13 @@
   import { ChevronLeft, Settings2 } from 'lucide-svelte';
 
   export let newGame: () => Promise<void>;
+
+  const handleNewGame = () => {
+    open = false;
+    newGame();
+  };
+
+  let open = false;
 </script>
 
 <Nav>
@@ -28,7 +35,7 @@
     <ChevronLeft size={32} absoluteStrokeWidth />
   </a>
   <h1>Sudoku</h1>
-  <Drawer>
+  <Drawer bind:open>
     <DrawerTrigger>
       <div class="grid h-8 w-8 place-items-center">
         <Settings2 absoluteStrokeWidth />
@@ -45,18 +52,29 @@
               <Switch id="auto-deselect" bind:checked={$sudokuSettings.autoDeselect} />
               <Label class="w-full cursor-pointer" for="auto-deselect">Auto deselect</Label>
             </div>
-
+            <span class="text-xs">
+              This will automatically deselect the number you selected after you input it.
+            </span>
             <div class="flex w-full cursor-pointer items-center gap-2">
               <Switch id="auto-show-correct" bind:checked={$sudokuSettings.showCorrect} />
               <Label class="w-full cursor-pointer" for="auto-show-correct">
                 Highlight correct numbers
               </Label>
             </div>
+            <span class="text-xs">
+              This will highlight correct numbers you input in green and won't allow you to select
+              them anymore.
+            </span>
             <Separator />
             <div class="flex w-full cursor-pointer items-center gap-2">
               <Switch id="auto-candidates" bind:checked={$sudokuSettings.autoCandidates} />
               <Label class="w-full cursor-pointer" for="auto-candidates">Auto candidates</Label>
             </div>
+            <span class="text-xs">
+              This will automatically show the candidates for all cells you haven't filled in yet.
+              It is easier to solve the puzzle. Your other option is to manually input the
+              candidates.
+            </span>
             <div class="flex w-full cursor-pointer items-center gap-2">
               <Switch
                 id="auto-delete-candidates"
@@ -75,17 +93,21 @@
             <Separator />
 
             <div class="w-full">
-              <Select>
+              <span class="mb-2">
+                <Label for="difficulty">Difficulty</Label>
+              </span>
+              <Select name="difficulty">
                 <SelectTrigger>
                   <SelectValue placeholder={capitalize($sudokuSettings.difficulty)} />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent id="difficulty">
                   <SelectGroup>
                     <SelectLabel>Difficulty</SelectLabel>
                     {#each difficulties as dif}
                       <SelectItem
                         value={dif}
                         on:click={() => {
+                          open = false;
                           $sudokuSettings.difficulty = dif;
                           newGame();
                         }}
@@ -102,8 +124,11 @@
             <Separator />
 
             <div class="w-full">
-              <Button variant="destructive" class="w-full" on:click={newGame} on:keydown={newGame}
-                >New Game</Button
+              <Button
+                variant="destructive"
+                class="w-full"
+                on:click={handleNewGame}
+                on:keydown={handleNewGame}>New Game</Button
               >
               <span class="text-xs">This resets the current game.</span>
             </div>
