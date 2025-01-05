@@ -47,6 +47,10 @@ const config = {
         card: {
           DEFAULT: 'hsl(var(--card) / <alpha-value>)',
           foreground: 'hsl(var(--card-foreground) / <alpha-value>)'
+        },
+        sudoku: {
+          DEFAULT: 'hsl(var(--sudoku) / <alpha-value>)',
+          foreground: 'hsl(var(--sudoku-foreground) / <alpha-value>)'
         }
       },
       borderRadius: {

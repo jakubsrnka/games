@@ -152,10 +152,10 @@
   <div class="m-auto grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
     <Game
       href="/sudoku"
-      class="border border-violet-400 bg-violet-300 hover:border-violet-700 hover:shadow-lg"
+      class="bg-sudoku border-sudoku-foreground/30 hover:border-sudoku-foreground/60 border hover:shadow-lg"
     >
-      <h2 slot="title" class="text-violet-900">Play Sudoku</h2>
-      <Grid3x3 slot="icon" class="text-violet-900" size={32} absoluteStrokeWidth />
+      <h2 slot="title" class="text-sudoku-foreground">Play Sudoku</h2>
+      <Grid3x3 slot="icon" class="text-sudoku-foreground" size={32} absoluteStrokeWidth />
     </Game>
   </div>
   <Separator />

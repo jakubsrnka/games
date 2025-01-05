@@ -229,7 +229,7 @@
     {$sudokuSettings.difficulty}
   </Badge>
 </div>
-<div class="relative grid w-fit grid-cols-9 border border-neutral-500">
+<div class="relative grid w-fit grid-cols-9 border border-foreground/80">
   <LayoverGrid />
   {#if grid}
     {#each Array.from({ length: 81 }) as _, i}
@@ -243,16 +243,12 @@
         />
       {/if}
       <button
-        class="relative flex h-9 w-9 items-center justify-center border-[0.5px] border-neutral-400"
-        class:border-neutral-500={selected === i}
-        class:outline={selected === i}
-        class:border-[1px]={selected === i}
-        class:outline-[0.5px]={selected === i}
-        class:outline-neutral-500={selected === i}
-        class:bg-violet-200={selected === i}
-        class:z-[10]={selected === i}
-        class:text-green-600={isCorrect}
-        class:bg-muted={grid.digits.has(VALID_GRID_INDEXES[i])}
+        class="relative flex h-9 w-9 items-center justify-center {selected === i
+          ? 'border-sudoku-foreground ring-sudoku-foreground bg-sudoku z-10 border-[1px] bg-opacity-90 ring-1'
+          : 'border-[0.5px] border-foreground/40'}"
+        class:text-sudoku={isCorrect}
+        class:bg-foreground={grid.digits.has(VALID_GRID_INDEXES[i])}
+        class:bg-opacity-10={grid.digits.has(VALID_GRID_INDEXES[i])}
         class:cursor-default={grid.digits.has(VALID_GRID_INDEXES[i]) || isCorrect}
         on:click={() => {
           if (!grid) return;
