@@ -11,7 +11,10 @@
     "lint": "prettier --check . && eslint .",
     "lint:fix": "bin/format",
     "format": "prettier --write .",
-    "typegen": "supabase gen types typescript --project-id ynuoykysosficzfeqsnt > src/lib/types/supabase.ts && bin/format"
+    "typegen": "supabase gen types typescript --project-id ynuoykysosficzfeqsnt > src/lib/types/supabase.ts && bin/format",
+    "patch": "pnpm version patch -m \"🔖 v%s\"",
+    "minor": "pnpm version minor -m \"🔖 v%s\"",
+    "major": "pnpm version major -m \"🔖 v%s\""
   },
   "devDependencies": {
     "@supabase/auth-helpers-sveltekit": "^0.12.0",
