@@ -1,3 +1,4 @@
+import { userProfile } from '$lib/client/user';
 import { supabase } from '$lib/shared/supabase';
 import type { LayoutLoad } from './$types';
 
@@ -34,6 +35,26 @@ export const load: LayoutLoad = async ({ data, url }) => {
   if (authResponse.error) {
     console.log('Failed to set authResponse', authResponse.error);
     return;
+  }
+
+  if (!authResponse.data.user) {
+    console.log('No user data found');
+    return;
+  }
+
+  try {
+    const userDataResponse = await supabase
+      .from('profiles')
+      .select()
+      .eq('id', authResponse.data.user?.id);
+    if (userDataResponse.error) {
+      console.log('Error fetching user data:', userDataResponse.error);
+    } else if (userDataResponse.data && userDataResponse.data.length) {
+      userProfile.set(userDataResponse.data[0]);
+    }
+    console.log('User data:', userDataResponse.data);
+  } catch (error) {
+    console.log('Error fetching user data:', error);
   }
 
   return {

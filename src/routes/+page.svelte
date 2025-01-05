@@ -6,7 +6,7 @@
   import Input from '$components/ui/input/input.svelte';
   import Label from '$components/ui/label/label.svelte';
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$components/ui/tabs';
-  import { user } from '$lib/client/user';
+  import { user, userProfile } from '$lib/client/user';
   import { login } from '$lib/user';
   import type { Login } from '$lib/types/user';
   import { browser } from '$app/environment';
@@ -17,6 +17,7 @@
   import History from '$components/sudoku/History.svelte';
   import { Separator } from '$components/ui/select';
   import ModeSwitcher from '$components/elements/ModeSwitcher.svelte';
+  import { supabase } from '$lib/shared/supabase';
 
   export let data: PageData;
 
@@ -44,6 +45,19 @@
         document.cookie = `sb_refresh=${session.refresh_token}; path=/; max-age=${60 * 60 * 24 * 7}`;
       }
       user.set(userResponse);
+
+      try {
+        const userDataResponse = await supabase.from('profiles').select().eq('id', userResponse.id);
+        if (userDataResponse.error) {
+          console.log('Error fetching user data:', userDataResponse.error);
+        } else if (userDataResponse.data && userDataResponse.data.length) {
+          userProfile.set(userDataResponse.data[0]);
+        }
+        console.log('User data:', userDataResponse.data);
+      } catch (error) {
+        console.log('Error fetching user data:', error);
+      }
+
       drawer = false;
       return;
     }
@@ -52,6 +66,7 @@
 
   const handleLogout = async () => {
     user.set(null);
+    userProfile.set(null);
     if (browser) {
       document.cookie = 'sb_session=; path=/; max-age=0';
       document.cookie = 'sb_refresh=; path=/; max-age=0';
@@ -87,7 +102,11 @@
               <div class="m-auto flex max-w-3xl flex-col gap-4">
                 <Error {error} />
                 {#if $user}
-                  <p>Logged in as {$user.email}</p>
+                  <p>
+                    Logged in as {$userProfile
+                      ? `${$userProfile.first_name} ${$userProfile.last_name}`
+                      : $user.email}
+                  </p>
                   <form on:submit|preventDefault={handleLogout}>
                     <Button type="submit" class="w-full">Logout</Button>
                   </form>
@@ -145,10 +164,14 @@
       <Card.Content class="p-2">
         {#if data.onboarding}
           <p class="flex items-center justify-center gap-6">
-            <Party size={32} /> Your email has been verified.<br />Welcome, {$user.email}!
+            <Party size={32} /> Your email has been verified.<br />Welcome, {$userProfile
+              ? $userProfile.first_name
+              : $user.email}!
           </p>
         {:else}
-          <p class="text-center">Welcome back, {$user.email}!</p>
+          <p class="text-center">
+            Welcome back, {$userProfile ? $userProfile.first_name : $user.email}!
+          </p>
         {/if}
       </Card.Content>
     </Card.Root>
