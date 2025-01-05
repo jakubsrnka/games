@@ -70,7 +70,6 @@
     <Gamepad2 size={32} absoluteStrokeWidth /> Games
   </h1>
   <div class="flex justify-end gap-2">
-    <ModeSwitcher />
     <Drawer bind:open={drawer}>
       <DrawerTrigger>
         <Button size="icon">
@@ -122,10 +121,15 @@
               </div>
             </TabsContent>
             <TabsContent value="settings">
-              <div class="m-auto max-w-3xl">
+              <div class="m-auto flex max-w-3xl flex-col gap-4">
+                <div class="flex items-center justify-between">
+                  <h3 class="font-semibold">App theme</h3>
+                  <ModeSwitcher />
+                </div>
+                <Separator />
                 <div class="flex items-center justify-between">
                   <h3 class="font-semibold">Sudoku settings</h3>
-                  <Button href="/sudoku" class="h-7">Sudoku page</Button>
+                  <Button href="/sudoku">Sudoku page</Button>
                 </div>
               </div>
             </TabsContent>
