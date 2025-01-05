@@ -1,6 +1,6 @@
 # Jakhub Games
 
-This is a project for [games.jakhub.cz](games.jakhub.cz).
+This is a project for [games.jakhub.cz](https://games.jakhub.cz).
 
 ## Development
 
