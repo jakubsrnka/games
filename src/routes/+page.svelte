@@ -1,7 +1,7 @@
 <script lang="ts">
   import Game from '$components/elements/Game.svelte';
   import { Drawer, DrawerContent, DrawerTrigger } from '$components/ui/drawer';
-  import { Grid3x3, User2 } from 'lucide-svelte';
+  import { Gamepad2, Grid3x3, User } from 'lucide-svelte';
   import Button from '$components/ui/button/button.svelte';
   import Input from '$components/ui/input/input.svelte';
   import Label from '$components/ui/label/label.svelte';
@@ -16,6 +16,7 @@
   import * as Card from '$components/ui/card';
   import History from '$components/sudoku/History.svelte';
   import { Separator } from '$components/ui/select';
+  import ModeSwitcher from '$components/elements/ModeSwitcher.svelte';
 
   export let data: PageData;
 
@@ -62,72 +63,77 @@
   <title>Jakhub Games</title>
 </svelte:head>
 
-<div class="grid grid-cols-[32px_1fr_32px] items-center border-b p-3">
-  <h1 class="col-start-2 text-center text-2xl font-light">Jakhub Games</h1>
-  <Drawer bind:open={drawer}>
-    <DrawerTrigger>
-      <div
-        class="grid h-8 w-8 cursor-pointer place-items-center rounded border border-background transition-all hover:border-muted"
-      >
-        <User2 absoluteStrokeWidth />
-      </div>
-    </DrawerTrigger>
-    <DrawerContent>
-      <div class="h-[80vh] p-4">
-        <Tabs>
-          <TabsList class="mb-4 w-full">
-            <TabsTrigger value="profile" class="w-full">Profile</TabsTrigger>
-            <TabsTrigger value="settings" class="w-full">Settings</TabsTrigger>
-          </TabsList>
-          <TabsContent value="profile">
-            <div class="m-auto flex max-w-3xl flex-col gap-4">
-              <Error {error} />
-              {#if $user}
-                <p>Logged in as {$user.email}</p>
-                <form on:submit|preventDefault={handleLogout}>
-                  <Button type="submit" class="w-full">Logout</Button>
-                </form>
-              {:else}
-                <form on:submit|preventDefault={handleLogin}>
-                  <div class="flex flex-col gap-3">
-                    <div class="flex flex-col gap-1">
-                      <Label for="email">Email</Label>
-                      <Input
-                        name="email"
-                        id="email"
-                        bind:value={userData.email}
-                        disabled={loading}
-                      />
+<div
+  class="grid grid-cols-[auto_1fr] items-center gap-4 border-b p-3 pl-6 pr-6 md:grid-cols-[1fr_auto_1fr]"
+>
+  <h1 class="flex items-center gap-2 text-center text-2xl font-light md:col-start-2">
+    <Gamepad2 size={32} absoluteStrokeWidth /> Games
+  </h1>
+  <div class="flex justify-end gap-2">
+    <ModeSwitcher />
+    <Drawer bind:open={drawer}>
+      <DrawerTrigger>
+        <Button size="icon">
+          <User size={20} />
+        </Button>
+      </DrawerTrigger>
+      <DrawerContent>
+        <div class="h-[80vh] p-4">
+          <Tabs>
+            <TabsList class="mb-4 w-full">
+              <TabsTrigger value="profile" class="w-full">Profile</TabsTrigger>
+              <TabsTrigger value="settings" class="w-full">Settings</TabsTrigger>
+            </TabsList>
+            <TabsContent value="profile">
+              <div class="m-auto flex max-w-3xl flex-col gap-4">
+                <Error {error} />
+                {#if $user}
+                  <p>Logged in as {$user.email}</p>
+                  <form on:submit|preventDefault={handleLogout}>
+                    <Button type="submit" class="w-full">Logout</Button>
+                  </form>
+                {:else}
+                  <form on:submit|preventDefault={handleLogin}>
+                    <div class="flex flex-col gap-3">
+                      <div class="flex flex-col gap-1">
+                        <Label for="email">Email</Label>
+                        <Input
+                          name="email"
+                          id="email"
+                          bind:value={userData.email}
+                          disabled={loading}
+                        />
+                      </div>
+                      <div class="flex flex-col gap-1">
+                        <Label for="password">Password</Label>
+                        <Input
+                          name="password"
+                          type="password"
+                          id="password"
+                          bind:value={userData.password}
+                          disabled={loading}
+                        />
+                      </div>
+                      <Button type="submit" {loading}>Login</Button>
                     </div>
-                    <div class="flex flex-col gap-1">
-                      <Label for="password">Password</Label>
-                      <Input
-                        name="password"
-                        type="password"
-                        id="password"
-                        bind:value={userData.password}
-                        disabled={loading}
-                      />
-                    </div>
-                    <Button type="submit" {loading}>Login</Button>
-                  </div>
-                </form>
-                <a href="/register" class="block text-center text-sm">Not registered yet?</a>
-              {/if}
-            </div>
-          </TabsContent>
-          <TabsContent value="settings">
-            <div class="m-auto max-w-3xl">
-              <div class="flex items-center justify-between">
-                <h3 class="font-semibold">Sudoku settings</h3>
-                <Button href="/sudoku" class="h-7">Sudoku page</Button>
+                  </form>
+                  <a href="/register" class="block text-center text-sm">Not registered yet?</a>
+                {/if}
               </div>
-            </div>
-          </TabsContent>
-        </Tabs>
-      </div>
-    </DrawerContent>
-  </Drawer>
+            </TabsContent>
+            <TabsContent value="settings">
+              <div class="m-auto max-w-3xl">
+                <div class="flex items-center justify-between">
+                  <h3 class="font-semibold">Sudoku settings</h3>
+                  <Button href="/sudoku" class="h-7">Sudoku page</Button>
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
+        </div>
+      </DrawerContent>
+    </Drawer>
+  </div>
 </div>
 <main class="m-auto flex max-w-7xl flex-col gap-4 p-6">
   {#if $user}

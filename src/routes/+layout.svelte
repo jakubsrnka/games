@@ -3,6 +3,7 @@
   import '../app.pcss';
   import type { LayoutData } from './$types';
   import { user } from '$lib/client/user';
+  import { ModeWatcher } from 'mode-watcher';
 
   export let data: LayoutData;
 
@@ -31,6 +32,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 </svelte:head>
 
+<ModeWatcher />
 {#key $user}
   <slot />
 {/key}
