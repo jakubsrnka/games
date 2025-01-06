@@ -15,9 +15,11 @@
   import SelectLabel from '$components/ui/select/select-label.svelte';
   import Separator from '$components/ui/separator/separator.svelte';
   import Switch from '$components/ui/switch/switch.svelte';
+  import { user } from '$lib/client/user';
   import { capitalize } from '$lib/shared/texts';
   import { difficulties } from '$lib/sudoku';
   import { sudokuSettings } from '$lib/sudoku/stores';
+  import { upsertSettings } from '$lib/user/settings';
   import { ChevronLeft, Settings2 } from 'lucide-svelte';
 
   export let newGame: () => Promise<void>;
@@ -28,6 +30,16 @@
   };
 
   let open = false;
+
+  $: {
+    if ($user) {
+      upsertSettings('sudoku.autoDeselect', $sudokuSettings.autoDeselect);
+      upsertSettings('sudoku.showCorrect', $sudokuSettings.showCorrect);
+      upsertSettings('sudoku.autoCandidates', $sudokuSettings.autoCandidates);
+      upsertSettings('sudoku.autoDeleteCandidates', $sudokuSettings.autoDeleteCandidates);
+      upsertSettings('sudoku.difficulty', $sudokuSettings.difficulty);
+    }
+  }
 </script>
 
 <Nav>

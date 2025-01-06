@@ -3,6 +3,19 @@
   import { Button } from '$components/ui/button/index.js';
   import * as DropdownMenu from '$components/ui/dropdown-menu/index.js';
   import { MoonStar, Sun } from 'lucide-svelte';
+  import { user } from '$lib/client/user';
+  import { upsertSettings } from '$lib/user/settings';
+
+  const handleChange = async (mode: 'light' | 'dark' | 'system' = 'system') => {
+    if (mode === 'system') {
+      resetMode();
+    } else {
+      setMode(mode);
+    }
+    if ($user) {
+      await upsertSettings('theme', mode);
+    }
+  };
 </script>
 
 <DropdownMenu.Root>
@@ -18,8 +31,8 @@
     </Button>
   </DropdownMenu.Trigger>
   <DropdownMenu.Content align="end">
-    <DropdownMenu.Item on:click={() => setMode('light')}>Light</DropdownMenu.Item>
-    <DropdownMenu.Item on:click={() => setMode('dark')}>Dark</DropdownMenu.Item>
-    <DropdownMenu.Item on:click={() => resetMode()}>System</DropdownMenu.Item>
+    <DropdownMenu.Item on:click={() => handleChange('light')}>Light</DropdownMenu.Item>
+    <DropdownMenu.Item on:click={() => handleChange('dark')}>Dark</DropdownMenu.Item>
+    <DropdownMenu.Item on:click={() => handleChange()}>System</DropdownMenu.Item>
   </DropdownMenu.Content>
 </DropdownMenu.Root>

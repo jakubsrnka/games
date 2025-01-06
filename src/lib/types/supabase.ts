@@ -24,6 +24,27 @@ export type Database = {
         };
         Relationships: [];
       };
+      settings: {
+        Row: {
+          created_at: string;
+          key: string;
+          user_id: string;
+          value: string;
+        };
+        Insert: {
+          created_at?: string;
+          key: string;
+          user_id?: string;
+          value?: string;
+        };
+        Update: {
+          created_at?: string;
+          key?: string;
+          user_id?: string;
+          value?: string;
+        };
+        Relationships: [];
+      };
       sudoku: {
         Row: {
           candidates: string;

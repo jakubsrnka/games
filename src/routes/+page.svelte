@@ -18,6 +18,7 @@
   import { Separator } from '$components/ui/select';
   import ModeSwitcher from '$components/elements/ModeSwitcher.svelte';
   import { supabase } from '$lib/shared/supabase';
+  import { loadAllSettings } from '$lib/user/settings';
 
   export let data: PageData;
 
@@ -53,10 +54,11 @@
         } else if (userDataResponse.data && userDataResponse.data.length) {
           userProfile.set(userDataResponse.data[0]);
         }
-        console.log('User data:', userDataResponse.data);
       } catch (error) {
         console.log('Error fetching user data:', error);
       }
+
+      await loadAllSettings();
 
       drawer = false;
       return;
@@ -179,7 +181,7 @@
   <div class="m-auto grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
     <Game
       href="/sudoku"
-      class="bg-sudoku border-sudoku-foreground/30 hover:border-sudoku-foreground/60 border hover:shadow-lg"
+      class="border border-sudoku-foreground/30 bg-sudoku hover:border-sudoku-foreground/60 hover:shadow-lg"
     >
       <h2 slot="title" class="text-sudoku-foreground">Play Sudoku</h2>
       <Grid3x3 slot="icon" class="text-sudoku-foreground" size={32} absoluteStrokeWidth />

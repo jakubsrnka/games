@@ -37,6 +37,7 @@
   import Time from '$components/elements/Time.svelte';
   import type { Difficulty } from '$lib/types/sudoku';
   import { Badge } from '$components/ui/badge';
+  import { replaceState } from '$app/navigation';
 
   export let id: string | null;
 
@@ -160,7 +161,7 @@
     stopTimer();
     startTimer();
 
-    history.replaceState(null, '', '/sudoku');
+    replaceState('/sudoku', { replace: true });
 
     grid = parseGrid(getSudoku($sudokuSettings.difficulty).puzzle, true);
 
@@ -244,7 +245,7 @@
       {/if}
       <button
         class="relative flex h-9 w-9 items-center justify-center {selected === i
-          ? 'border-sudoku-foreground ring-sudoku-foreground bg-sudoku z-10 border-[1px] bg-opacity-90 ring-1'
+          ? 'z-10 border-[1px] border-sudoku-foreground bg-sudoku bg-opacity-90 ring-1 ring-sudoku-foreground'
           : 'border-[0.5px] border-foreground/40'}"
         class:text-sudoku={isCorrect}
         class:bg-foreground={grid.digits.has(VALID_GRID_INDEXES[i])}
