@@ -1,7 +1,7 @@
 <script lang="ts">
   import Game from '$components/elements/Game.svelte';
   import { Drawer, DrawerContent, DrawerTrigger } from '$components/ui/drawer';
-  import { Gamepad2, Grid3x3, User } from 'lucide-svelte';
+  import { Gamepad2, Grid3x3, Shapes, User } from 'lucide-svelte';
   import Button from '$components/ui/button/button.svelte';
   import Input from '$components/ui/input/input.svelte';
   import Label from '$components/ui/label/label.svelte';
@@ -185,6 +185,13 @@
     >
       <h2 slot="title" class="text-sudoku-foreground">Play Sudoku</h2>
       <Grid3x3 slot="icon" class="text-sudoku-foreground" size={32} absoluteStrokeWidth />
+    </Game>
+    <Game
+      href="/sand"
+      class="border border-blue-300/30 bg-blue-100 hover:border-blue-300/60 hover:shadow-lg dark:bg-blue-900/40"
+    >
+      <h2 slot="title" class="text-blue-800 dark:text-blue-100">Falling Sand</h2>
+      <Shapes slot="icon" class="text-blue-800 dark:text-blue-100" size={32} absoluteStrokeWidth />
     </Game>
   </div>
   <Separator />
